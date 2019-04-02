@@ -326,7 +326,6 @@ class APIView(ModelView):
                     obj = to_dict(document, exclude=self.exclude_columns, include=self.include_columns)
                     del (obj["_rev"])
                     return obj
-                return None
         else:
             if self.primary_key is not None:
                 data["doc_type"] = self.collection_name
