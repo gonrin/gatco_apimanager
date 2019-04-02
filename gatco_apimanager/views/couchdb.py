@@ -321,11 +321,11 @@ class APIView(ModelView):
                     return to_dict(document, exclude=self.exclude_columns, include=self.include_columns)
             else:
             	if self.primary_key is not None:
-					data["doc_type"] = self.collection_name
-					document = self.db.db.create_document(data)
-					obj = to_dict(document, exclude=self.exclude_columns, include=self.include_columns)
-					del (obj["_rev"])
-					return obj
+                    data["doc_type"] = self.collection_name
+                    document = self.db.db.create_document(data)
+                    obj = to_dict(document, exclude=self.exclude_columns, include=self.include_columns)
+                    del (obj["_rev"])
+                    return obj
                 return None
         else:
             if self.primary_key is not None:
