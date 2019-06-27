@@ -1181,9 +1181,9 @@ class APIView(ModelView):
             headers = {}
             for postprocess in self.postprocess['DELETE_SINGLE']:
                 if asyncio.iscoroutinefunction(postprocess):
-                    resp = await postprocess(request=request, was_deleted=was_deleted, Model=self.model, headers=headers)
+                    resp = await postprocess(request=request, instance_id=instid, was_deleted=was_deleted, Model=self.model, headers=headers)
                 else:
-                    resp = postprocess(request=request, was_deleted=was_deleted, Model=self.model, headers=headers)
+                    resp = postprocess(request=request, instance_id=instid, was_deleted=was_deleted, Model=self.model, headers=headers)
                     
                 if (resp is not None) and isinstance(resp, HTTPResponse):
                     return resp
