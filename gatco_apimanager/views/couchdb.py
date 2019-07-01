@@ -55,7 +55,7 @@ class APIView(ModelView):
 
     async def _search(self, request, search_params):
         is_single = search_params.get('single')
-        order_by_list = search_params.get('order_by', [])
+        order_by_list = search_params.get('order_by', None)
 
         # paginate
         # num_results = 20
@@ -75,9 +75,16 @@ class APIView(ModelView):
         if 'filters' in search_params:
             filters = search_params['filters']
             filters["doc_type"] = self.collection_name
-            query = Query(self.db.db, selector=filters)
+            if order_by_list is not None:
+            	query = Query(self.db.db, selector=filters, sort=order_by_list)
+            else:
+            	query = Query(self.db.db, selector=filters)
         else:
-            query = Query(self.db.db, selector={"doc_type": self.collection_name})
+        	if order_by_list is not None:
+            	query = Query(self.db.db, selector={"doc_type": self.collection_name}, sort=order_by_list)
+            else:
+            	query = Query(self.db.db, selector={"doc_type": self.collection_name})
+            
 
         if is_single:
             for document in query(limit=1)['docs']:
