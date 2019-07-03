@@ -72,20 +72,17 @@ class APIView(ModelView):
             # total_pages = 1
 
         query = None
+        filters = {"doc_type": self.collection_name}
+
         if 'filters' in search_params:
             filters = search_params['filters']
             filters["doc_type"] = self.collection_name
-            if order_by_list is not None:
-            	query = Query(self.db.db, selector=filters, sort=order_by_list)
-            else:
-            	query = Query(self.db.db, selector=filters)
+        
+        if order_by_list is not None:
+            query = Query(self.db.db, selector=filters, sort=order_by_list)
         else:
-        	if order_by_list is not None:
-            	query = Query(self.db.db, selector={"doc_type": self.collection_name}, sort=order_by_list)
-            else:
-            	query = Query(self.db.db, selector={"doc_type": self.collection_name})
-            
-
+            query = Query(self.db.db, selector=filters)
+        
         if is_single:
             for document in query(limit=1)['docs']:
                 result = to_dict(document, exclude=self.exclude_columns, include=self.include_columns)
