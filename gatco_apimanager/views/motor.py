@@ -8,6 +8,14 @@ from gatco.exceptions import GatcoException, ServerError
 from gatco.response import json, text, HTTPResponse
 from gatco.request import json_loads
 
+def instids(instid):
+    list_ids = [instid]
+    try:
+        list_ids.append(ObjectId(instid))
+    except:
+        pass
+    return list_ids
+
 from . import ModelView
 
 def response_exception(exception):    
@@ -148,7 +156,7 @@ class APIView(ModelView):
         return json(result, headers=headers, status=200)
     
     async def _get(self, request, instid):
-        result = await self.db.db[self.collection_name].find_one({'_id': {'$in': [ObjectId(instid), instid]}})
+        result = await self.db.db[self.collection_name].find_one({'_id': {'$in': instids(instid)}})
         if "_id" in result:
             result["_id"] = str(result["_id"])
         
@@ -210,7 +218,7 @@ class APIView(ModelView):
         was_deleted = False
         if instid is not None:
             #result = await self.db.db[self.collection_name].delete_one({'_id': {'$eq': ObjectId(instid)}})
-            result = await self.db.db[self.collection_name].delete_one({'_id': {'$in': [ObjectId(instid), instid]}})
+            result = await self.db.db[self.collection_name].delete_one({'_id': {'$in': instids(instid)}})
             was_deleted = result.deleted_count > 0
             
         try:
@@ -288,7 +296,7 @@ class APIView(ModelView):
             del data["_id"]
         
         #result = await self.db.db[self.collection_name].update_one({'_id': ObjectId(instid)}, {'$set': data})
-        result = await self.db.db[self.collection_name].replace_one({'_id': {'$in': [ObjectId(instid), instid]}},  data)
+        result = await self.db.db[self.collection_name].replace_one({'_id': {'$in': instids(instid)}},  data)
 
         if result.matched_count > 0:
             data["_id"] = instid
