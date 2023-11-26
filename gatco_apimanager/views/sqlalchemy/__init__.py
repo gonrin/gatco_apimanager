@@ -1020,9 +1020,9 @@ class APIView(ModelView):
             headers = {}
             for postprocess in self.postprocess['GET_SINGLE']:
                 if asyncio.iscoroutinefunction(postprocess):
-                    resp = await postprocess(request=request, result=result, Model=self.model, headers=headers)
+                    resp = await postprocess(request=request, instance_id=instid, result=result, Model=self.model, headers=headers)
                 else:
-                    resp = postprocess(request=request, result=result, Model=self.model, headers=headers)
+                    resp = postprocess(request=request, instance_id=instid, result=result, Model=self.model, headers=headers)
                 
                 if (resp is not None) and isinstance(resp, HTTPResponse):
                     return resp
@@ -1455,9 +1455,9 @@ class APIView(ModelView):
             try:
                 for postprocess in self.postprocess['PATCH_SINGLE']:
                     if asyncio.iscoroutinefunction(postprocess):
-                        resp = await postprocess(request=request, result=result, Model=self.model, headers=headers)
+                        resp = await postprocess(request=request, instance_id=instid, result=result, Model=self.model, headers=headers)
                     else:
-                        resp = postprocess(request=request, result=result, Model=self.model, headers=headers)
+                        resp = postprocess(request=request, instance_id=instid, result=result, Model=self.model, headers=headers)
                         
                     if (resp is not None) and isinstance(resp, HTTPResponse):
                         return resp
